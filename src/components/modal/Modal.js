@@ -19,7 +19,7 @@ Modal.setAppElement('#root');
 export const ModalImg = ({ isOpen, onRequestClose, imgItem }) => {
   return (
     <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles}>
-      <img src={imgItem} alt="Image"></img>
+      <img src={imgItem} alt=""></img>
     </Modal>
   );
 };
