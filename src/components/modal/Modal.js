@@ -8,20 +8,18 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
+    width: '800',
+    height: '600',
+    zIndex: 1300,
+    padding: 0,
   },
 };
+Modal.setAppElement('#root');
 
-export const ModalImg = ({ modalIsOpen, closeModal, imgItem }) => {
+export const ModalImg = ({ isOpen, onRequestClose, imgItem }) => {
   return (
-    <Modal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
-      style={customStyles}
-    >
-      <h2>Hello</h2>
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles}>
       <img src={imgItem}></img>
-      <button onClick={closeModal}>close</button>
-      <div>I am a modal</div>
     </Modal>
   );
 };

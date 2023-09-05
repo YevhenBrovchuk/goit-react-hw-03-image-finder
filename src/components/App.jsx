@@ -11,6 +11,7 @@ export class App extends Component {
     query: '',
     images: [],
     page: 1,
+    totalPages: 0,
     loading: false,
     error: false,
     modalIsOpen: false,
@@ -38,7 +39,7 @@ export class App extends Component {
   };
 
   closeModal = () => {
-    this.setState({ setIsOpen: false });
+    this.setState({ setIsOpen: false, modalImg: '' });
   };
 
   async componentDidUpdate(prevProps, prevState) {
@@ -49,6 +50,7 @@ export class App extends Component {
       try {
         this.setState({ loading: true, error: false });
         const img = await fetchImg(this.state.query, this.state.page);
+        console.log(img);
         const imghelper = img.data.hits.map(item => ({
           id: item.id,
           webformatURL: item.webformatURL,
@@ -56,6 +58,7 @@ export class App extends Component {
         }));
         this.setState(prevState => ({
           images: [...prevState.images, ...imghelper],
+          totalPages: Math.ceil(img.data.totalHits / 12),
         }));
       } catch (error) {
         this.setState({ error: true });
@@ -82,13 +85,18 @@ export class App extends Component {
             openModalImg={this.openModal}
           ></ImageGallery>
         )}
-        <Button onClickBtn={this.handleLoadMore}></Button>
+        {this.state.images.length > 0 &&
+          this.state.totalPages !== this.state.page &&
+          !this.state.loading && (
+            <Button onClickBtn={this.handleLoadMore}></Button>
+          )}
+
         {this.state.loading === true && <Loader />}
         {this.state.setIsOpen === true && (
           <ModalImg
-            imgItem={this.modalImg}
-            modalIsOpen={this.state.modalIsOpen}
-            onCloseModal={this.closeModal}
+            imgItem={this.state.modalImg}
+            isOpen={this.state.modalIsOpen}
+            onRequestClose={this.closeModal}
           />
         )}
       </div>
