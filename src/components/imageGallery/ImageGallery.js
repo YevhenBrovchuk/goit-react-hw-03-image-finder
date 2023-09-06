@@ -1,4 +1,4 @@
-import { ImageGalleryItems } from 'components/imageGalleryItem/ImageGalleryItem';
+import { ImagesGalleryImage } from 'components/imageGalleryItem/ImageGalleryItem';
 import { ImageGalleryItem, ImageGalleryUl } from './ImageGallery.styled';
 
 export const ImageGallery = ({ items, openModalImg }) => {
@@ -9,7 +9,7 @@ export const ImageGallery = ({ items, openModalImg }) => {
           key={item.id}
           onClick={() => openModalImg(item.largeImageURL)}
         >
-          <ImageGalleryItems items={item.webformatURL} />
+          <ImagesGalleryImage items={item.webformatURL} />
         </ImageGalleryItem>
       ))}
     </ImageGalleryUl>

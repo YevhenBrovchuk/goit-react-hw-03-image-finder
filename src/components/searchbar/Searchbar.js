@@ -1,3 +1,5 @@
+import { Component } from 'react';
+import { toast } from 'react-toastify';
 import {
   SearchForm,
   SearchFormButton,
@@ -6,22 +8,34 @@ import {
   SearchbarHeader,
 } from './Searchbar.styled';
 
-export const Searchbar = ({ onAdd }) => {
-  return (
-    <SearchbarHeader>
-      <SearchForm onSubmit={onAdd}>
-        <SearchFormButton type="submit">
-          <SearchFormButtonLabel>Search</SearchFormButtonLabel>
-        </SearchFormButton>
+export class Searchbar extends Component {
+  helperSubmit = evt => {
+    evt.preventDefault();
+    const serchItem = evt.target.elements.query.value.trim();
+    if (!serchItem) {
+      toast.error('Enter a search term ');
+    }
 
-        <SearchFormInput
-          name="query"
-          type="text"
-          autocomplete="off"
-          autofocus
-          placeholder="Search images and photos"
-        />
-      </SearchForm>
-    </SearchbarHeader>
-  );
-};
+    this.props.onAdd(serchItem);
+    evt.target.reset();
+  };
+
+  render() {
+    return (
+      <SearchbarHeader>
+        <SearchForm onSubmit={this.helperSubmit} autocomplete="off">
+          <SearchFormButton>
+            <SearchFormButtonLabel>Search</SearchFormButtonLabel>
+          </SearchFormButton>
+
+          <SearchFormInput
+            name="query"
+            type="search"
+            autofocus
+            placeholder="Search images and photos"
+          />
+        </SearchForm>
+      </SearchbarHeader>
+    );
+  }
+}

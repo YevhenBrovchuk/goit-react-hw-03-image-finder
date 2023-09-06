@@ -11,19 +11,20 @@ export class App extends Component {
     query: '',
     images: [],
     page: 1,
-    totalPages: 0,
+    showBtn: '',
     loading: false,
     error: false,
-    modalIsOpen: false,
     setIsOpen: false,
     modalImg: '',
+    randomId: '',
   };
+
   handleSubmit = evt => {
-    evt.preventDefault();
     this.setState({
-      query: `${Date.now()}/${evt.target.elements.query.value}`,
+      query: evt,
       images: [],
       page: 1,
+      randomId: Date.now(),
     });
   };
 
@@ -34,8 +35,7 @@ export class App extends Component {
   };
 
   openModal = evt => {
-    this.setState({ setIsOpen: true });
-    this.setState({ modalImg: evt });
+    this.setState({ setIsOpen: true, modalImg: evt });
   };
 
   closeModal = () => {
@@ -45,12 +45,12 @@ export class App extends Component {
   async componentDidUpdate(prevProps, prevState) {
     if (
       prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
+      prevState.page !== this.state.page ||
+      prevState.randomId !== this.state.randomId
     ) {
       try {
         this.setState({ loading: true, error: false });
         const img = await fetchImg(this.state.query, this.state.page);
-        console.log(img);
         const imghelper = img.data.hits.map(item => ({
           id: item.id,
           webformatURL: item.webformatURL,
@@ -58,7 +58,7 @@ export class App extends Component {
         }));
         this.setState(prevState => ({
           images: [...prevState.images, ...imghelper],
-          totalPages: Math.ceil(img.data.totalHits / 12),
+          showBtn: this.state.page < Math.ceil(img.data.totalHits / 12),
         }));
       } catch (error) {
         this.setState({ error: true });
@@ -79,23 +79,23 @@ export class App extends Component {
         }}
       >
         <Searchbar onAdd={this.handleSubmit}></Searchbar>
+
         {this.state.images.length > 0 && (
           <ImageGallery
             items={this.state.images}
             openModalImg={this.openModal}
-          ></ImageGallery>
+          />
         )}
-        {this.state.images.length > 0 &&
-          this.state.totalPages !== this.state.page &&
-          !this.state.loading && (
-            <Button onClickBtn={this.handleLoadMore}></Button>
-          )}
 
-        {this.state.loading === true && <Loader />}
-        {this.state.setIsOpen === true && (
+        {this.state.showBtn && (
+          <Button onClickBtn={this.handleLoadMore}></Button>
+        )}
+
+        {this.state.loading && <Loader />}
+        {this.state.setIsOpen && (
           <ModalImg
             imgItem={this.state.modalImg}
-            isOpen={this.state.modalIsOpen}
+            isOpen={this.state.setIsOpen}
             onRequestClose={this.closeModal}
           />
         )}
